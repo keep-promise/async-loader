@@ -1,0 +1,25 @@
+{
+  "name": "keep-async-loader",
+  "version": "1.0.0",
+  "description": "运行时动态远程JS、CSS模块加载",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "npm run cjs && npm run esm",
+    "cjs": "rm -rf ./lib && tsc -p tsconfig.cjs.json",
+    "esm": "rm -rf ./esm && rm -rf types && tsc -p tsconfig.esm.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keep-promise/async-loader.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/keep-promise/async-loader/issues"
+  },
+  "homepage": "https://github.com/keep-promise/async-loader#readme",
+  "devDependencies": {
+    "tslib": "^2.6.2"
+  }
+}

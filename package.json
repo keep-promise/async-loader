@@ -1,6 +1,6 @@
 {
-  "name": "keep-async-loader",
-  "version": "1.0.1-beta.0",
+  "name": "async-module-loader",
+  "version": "1.0.1",
   "description": "运行时动态远程JS、CSS模块加载",
   "main": "lib/index.js",
   "module": "esm/index.js",

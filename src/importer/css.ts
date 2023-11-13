@@ -2,22 +2,22 @@
  * 加载CSS
  */
 
-import { CacheStatus } from '../cache/cache'
+import { ModuleStatus } from '../cache/cache'
 import cache from '../cache/css'
 
 function importACss(url: string): Promise<void> {
   const item = cache.getOrCreateItemByURL(url)
   const { status, error } = item
 
-  if (status === CacheStatus.LOADED) {
+  if (status === ModuleStatus.LOADED) {
     return Promise.resolve()
   }
 
-  if (status === CacheStatus.ERROR) {
+  if (status === ModuleStatus.ERROR) {
     return Promise.reject(error)
   }
 
-  if (status === CacheStatus.LOADING) {
+  if (status === ModuleStatus.LOADING) {
     return new Promise((resolve, reject) => {
       const { el } = item
       const loadCallback = () => {
@@ -34,7 +34,7 @@ function importACss(url: string): Promise<void> {
     })
   }
 
-  item.status = CacheStatus.LOADING
+  item.status = ModuleStatus.LOADING
 
   return new Promise((resolve, reject) => {
     const el = document.createElement('link')
@@ -45,7 +45,7 @@ function importACss(url: string): Promise<void> {
     const loadCallback = () => {
       el.removeEventListener('load', loadCallback)
 
-      item.status = CacheStatus.LOADED
+      item.status = ModuleStatus.LOADED
       item.el = null
       resolve()
     }
@@ -55,7 +55,7 @@ function importACss(url: string): Promise<void> {
 
       const error = evt.error || new Error(`Load css failed. href=${url}`)
 
-      item.status = CacheStatus.ERROR
+      item.status = ModuleStatus.ERROR
       item.error = error
       item.el = null
 
@@ -77,7 +77,7 @@ function removeACSS(url: string): Promise<void> {
     return Promise.resolve()
   }
 
-  if (item.status === CacheStatus.LOADING) {
+  if (item.status === ModuleStatus.LOADING) {
     return Promise.reject(new Error(`Can NOT unimport a loading css file.`))
   }
 

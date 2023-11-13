@@ -9,6 +9,11 @@
   "exports": {
     ".": "./esm/index.js"
   },
+  "files": [
+    "lib",
+    "esm",
+    "types"
+  ],
   "scripts": {
     "build": "npm run cjs && npm run esm",
     "cjs": "rm -rf ./lib && tsc -p tsconfig.cjs.json",

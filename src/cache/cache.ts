@@ -1,59 +1,60 @@
 /**
- * 缓存
- *
- * @author yusangeng@outlook.com
+ * 模块缓存
  */
 
-type FReject = (reason?: any) => void
+type Reject = (reason?: any) => void
 
-export enum CacheStatus {
+// 加载模块状态
+export enum ModuleStatus {
   NONE,
   LOADING,
   LOADED,
   ERROR
 }
 
-export interface CacheItem {
-  url: string
-  status: CacheStatus
-  el: HTMLElement | null
-  error: Error | null
-  reject: FReject | null
+// 模块基本信息
+export interface BaseModule {
+  url: string;            // 模块地址
+  status: ModuleStatus    // 模块状态
+  el: HTMLElement | null  // 模块dom
+  error: Error | null     // 错误信息
+  reject: Reject | null   // 加载失败信息
 }
 
-type CacheItems<CacheValue extends CacheItem> = Record<string, CacheValue | null>
+type Modules<Module extends BaseModule> = Record<string, Module | null>
 
-export class Cache<CacheValue extends CacheItem> {
-  items: CacheItems<CacheValue> = {}
-  private factory: (key: string) => CacheValue
+export class Cache<Module extends BaseModule> {
 
-  constructor(factory: (key: string) => CacheValue) {
+  data: Modules<Module> = {}
+  private factory: (key: string) => Module
+
+  constructor(factory: (key: string) => Module) {
     this.factory = factory
   }
 
-  getOrCreateItemByURL(key: string): CacheValue {
-    let ret = this.items[key]
+  getOrCreateItemByURL(key: string): Module {
+    let module = this.data[key];
 
-    if (!ret) {
-      ret = this.items[key] = this.factory(key)
+    if (!module) {
+      module = this.data[key] = this.factory(key);
     }
 
-    return ret
+    return module;
   }
 
-  tryGetItemByURL(key: string): CacheValue | null {
-    return this.items[key] ?? null
+  tryGetItemByURL(key: string): Module | null {
+    return this.data[key] ?? null;
   }
 
   removeItemByURL(key: string) {
-    const ret = this.items[key]
+    const module = this.data[key];
 
-    if (!ret) {
-      return ret
+    if (!module) {
+      return module;
     }
 
-    this.items[key] = null
+    this.data[key] = null;
 
-    return ret
+    return module;
   }
 }

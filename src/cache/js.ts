@@ -1,22 +1,20 @@
 /**
  * js缓存
- *
- * @author yusangeng@outlook.com
  */
 
-import { Cache, CacheItem, CacheStatus } from './cache'
+import { Cache, BaseModule, ModuleStatus } from './cache'
 import { getInstance } from '../instance'
 
-export interface JSCacheItem extends CacheItem {
+export interface JSModule extends BaseModule {
   el: HTMLScriptElement | null
   exportThing: any
 }
 
 const jsCache = getInstance('jsCache', () => {
-  return new Cache<JSCacheItem>((key: string) => {
+  return new Cache<JSModule>((key: string) => {
     return {
       url: key,
-      status: CacheStatus.NONE,
+      status: ModuleStatus.NONE,
       el: null,
       error: null,
       reject: null,

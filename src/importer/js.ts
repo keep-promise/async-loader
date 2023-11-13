@@ -1,11 +1,9 @@
 /**
  * 加载JS
- *
- * @author yusangeng@outlook.com
  */
 
-import { CacheStatus } from '../cache/cache'
-import cache, { JSCacheItem } from '../cache/js'
+import { ModuleStatus } from '../cache/cache';
+import cache, { JSModule } from '../cache/js';
 import addItem from './define'
 
 type ImportAJSOption = {
@@ -13,8 +11,8 @@ type ImportAJSOption = {
   crossOrigin: string
 }
 
-function doImportAJs(item: JSCacheItem, url: string, options: ImportAJSOption): Promise<any> {
-  item.status = CacheStatus.LOADING
+function doImportAJs(item: JSModule, url: string, options: ImportAJSOption): Promise<any> {
+  item.status = ModuleStatus.LOADING
 
   const { umd, crossOrigin } = options
 
@@ -39,7 +37,7 @@ function doImportAJs(item: JSCacheItem, url: string, options: ImportAJSOption): 
     const loadCallback = () => {
       el.removeEventListener('load', loadCallback)
 
-      item.status = CacheStatus.LOADED
+      item.status = ModuleStatus.LOADED
       item.el = null
 
       resolve(item.exportThing)
@@ -50,7 +48,7 @@ function doImportAJs(item: JSCacheItem, url: string, options: ImportAJSOption): 
 
       const error = evt.error || new Error(`Load javascript failed. src=${url}`)
 
-      item.status = CacheStatus.ERROR
+      item.status = ModuleStatus.ERROR
       item.error = error
       item.el = null
 
@@ -69,15 +67,15 @@ function importAJS(url: string, options: ImportAJSOption): Promise<any> {
   const item = cache.getOrCreateItemByURL(url)
   const { status, exportThing, error } = item
 
-  if (status === CacheStatus.LOADED) {
+  if (status === ModuleStatus.LOADED) {
     return Promise.resolve(exportThing)
   }
 
-  if (status === CacheStatus.ERROR) {
+  if (status === ModuleStatus.ERROR) {
     return Promise.reject(error)
   }
 
-  if (status === CacheStatus.LOADING) {
+  if (status === ModuleStatus.LOADING) {
     const { el } = item
 
     return new Promise((resolve, reject) => {

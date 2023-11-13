@@ -1,11 +1,9 @@
 /**
  * 全局define函数
- *
- * @author yusangeng@outlook.com
  */
 
-import { CacheStatus } from '../cache/cache'
-import { JSCacheItem } from '../cache/js';
+import { ModuleStatus } from '../cache/cache';
+import { JSModule } from '../cache/js';
 import { getInstance } from '../instance';
 
 const win = window as any
@@ -19,7 +17,7 @@ if (typeof define !== 'undefined' && !define.runtime_import) {
   hasOtherAMDLoader = true
 }
 
-const pendingItemMap = getInstance<Record<string, JSCacheItem | null>>('pendingItemMap', () => ({}))
+const pendingItemMap = getInstance<Record<string, JSModule | null>>('pendingItemMap', () => ({}))
 
 type FUMDDefine = {
   (...args: Array<any>): void
@@ -41,7 +39,7 @@ const umdDefine: FUMDDefine = function define(...args: Array<any>): void {
   let item = pendingItemMap[src]
 
   if (!item) {
-    throw new Error(`Can NOT find item, src=${src}`)
+    throw new Error(`Can NOT find item, src=${src}`);
   }
 
   pendingItemMap[src] = null
@@ -87,7 +85,7 @@ const umdDefine: FUMDDefine = function define(...args: Array<any>): void {
       item.exportThing.default = exportThing.default
     }
   } catch (err) {
-    item.status = CacheStatus.ERROR
+    item.status = ModuleStatus.ERROR
     if (err instanceof Error) {
       item.error = err
     }
@@ -119,7 +117,7 @@ const amdFlagCheater = () => {
 // private flag
 umdDefine.runtime_import = true
 
-export default function addItem(src: string, item: JSCacheItem): void {
+export default function addItem(src: string, item: JSModule): void {
   if (hasOtherAMDLoader) {
     throw new Error(`runtime-import UMD mode uses window.define, you should NOT have your own window.define.`)
   }
